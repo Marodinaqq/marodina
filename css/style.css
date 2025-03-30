@@ -1,0 +1,205 @@
+@font-face { 
+    font-family: 'KOYSAN'; 
+    src: url('../fonts/font.woff') format('woff'); 
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    transition-duration: 0.3s
+}
+
+body { 
+    font-family: 'KOYSAN', Arial, sans-serif;
+    background: #333;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+nav {
+    width: 100%;
+    height: 10vh;
+    padding: 20px;
+    margin-bottom: 5vh;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 3px solid #fff;
+}
+
+input, textarea {
+    outline: none;
+    border: none;
+    border-radius: 3px;
+    padding: 5px 10px;
+    background-color: #444;
+    color: #fff;
+    font-family: 'KOYSAN', Arial, sans-serif;
+    resize: none;
+}
+
+textarea {
+    resize: none;
+    width: 80%;
+    border-radius: 0;
+}
+
+button {
+    outline: none;
+    border: none;
+    background-color: #444;
+    padding: 5px;
+    font-size: 20px;
+    color: #fff;
+}
+
+button:hover {
+    background-color: #fff;
+}
+
+input[type=submit]{
+    padding: 5px 10px;
+    background-color: #444;
+    color: #fff;
+}
+
+input[value=→]{
+    display: none;
+}
+
+input[type=submit]:hover{
+    background-color: #fff;
+    color: #444;
+}
+
+#searchbtn {
+    visibility: hidden;
+    width: 0;
+    height: 0;
+}
+
+label[for=searchbtn] {
+    display: none;
+    font-size: 16px;
+    padding: 8px;
+    background-color: #444;
+}
+
+label[for=searchbtn]:hover {
+    background-color: #fff;
+    color: #444;
+}
+
+#chat {
+    width: 95%;
+    height: 75vh;
+    border-radius: 3px;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);
+}
+
+#messages {
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+    overflow-y: scroll;
+}
+
+#messageForm {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+#messageForm input[type=submit]{
+    background-color: #555;
+    flex: 1;
+    border-radius: 0;
+}
+
+#messageForm input[type=submit]:hover{
+    background-color: #fff;
+}
+
+
+.message { 
+    background: #444; 
+    border-radius: 5px; 
+    padding: 10px; 
+    margin: 10px 0; 
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);
+    max-width: 400px;
+}
+
+.emoji-container {
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: nowrap;
+}
+
+@media screen and (max-width: 418px) {
+    #searchForm {
+        display: none;
+    }
+    label[for=searchbtn] {
+        display: block;
+    }
+
+    #searchbtn:checked + nav > #searchForm {
+        display: block;
+    }
+
+    #searchbtn:checked + nav > h1 {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 409px) {
+    form * {
+        font-size: 14px;
+    }
+    input[value=→]{
+        display: block;
+    }
+    input[value=Отправить]{
+        display: none;
+    }
+    #chat {
+        height: 70vh;
+    }
+    nav {
+        align-items: center;
+        margin-bottom: 3vh;
+        padding: 10px;
+        height: 8vh;
+    }
+
+    h1{
+        font-size: 19px;
+    }
+}
+
+@media screen and (max-width: 349px) {
+    #messages {
+        font-size: 12px;
+    }
+}
+
+@media screen and (max-width: 308px) {
+    form * {
+        font-size: 10px;
+    }
+}
+
+@media screen and (max-width: 267px) {
+    #messages {
+        font-size: 10px;
+    }
+}
+
+@media screen and (max-width: 234px) {
+    #messages {
+        font-size: 8px;
+    }
+}
