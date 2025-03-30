@@ -1,3 +1,4 @@
+<img src="https://github.com/Marodinaqq/marodina/blob/main/icon.png" width="80">
 # Welcome
 A simple product for anonymous messages. Contains a couple of functions for users.  
 
