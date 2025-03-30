@@ -10,3 +10,5 @@ Absolutely! Disabled harmful chips and cookies. Fully anonymous chat without tra
 └── index.php - main code
 ```
 ~~superfluous such as README.md and SECURITY~~ ` 
+# License
+The Marodina is open-sourced licensed under the GNU GENERAL PUBLIC LICENSE.
