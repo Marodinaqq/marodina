@@ -2,6 +2,7 @@
 // Указываем файл для хранения сообщений и логов
 $filename = 'messages.txt';
 $errorLogFile = 'error_log.txt';
+$uploadDir = 'uploads/'; // Directory for uploaded files
 
 // Функция для логирования ошибок
 function logError($message) {
@@ -11,27 +12,49 @@ function logError($message) {
 
 // Функция для обработки отправки сообщения
 function handleMessage($filename) {
-    // Получаем сообщение из POST-запроса с фильтрацией
+    global $uploadDir;
+    
+    // Create uploads directory if it doesn't exist
+    if (!file_exists($uploadDir)) {
+        mkdir($uploadDir, 0755, true);
+    }
+
     $message = filter_input(INPUT_POST, 'message', FILTER_SANITIZE_STRING);
+    $dateTime = date("Y-m-d H:i:s");
+    $filePath = '';
 
-    if ($message) {
-        $dateTime = date("Y-m-d H:i:s"); // Получаем текущую дату и время
-        $fullMessage = "$dateTime - $message" . PHP_EOL; // Форматируем сообщение
-
-        // Проверяем, существует ли файл, и создаем его, если нет
-        if (!file_exists($filename)) {
-            if (!touch($filename)) {
-                logError("Failed to create message file: $filename");
-                return;
+    // Handle file upload
+    if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+        $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+        $fileInfo = finfo_open(FILEINFO_MIME_TYPE);
+        $detectedType = finfo_file($fileInfo, $_FILES['image']['tmp_name']);
+        
+        if (in_array($detectedType, $allowedTypes)) {
+            $extension = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
+            $fileName = uniqid('img_') . '.' . $extension;
+            $filePath = $uploadDir . $fileName;
+            
+            if (!move_uploaded_file($_FILES['image']['tmp_name'], $filePath)) {
+                logError("Failed to move uploaded file");
+                $filePath = '';
             }
+        } else {
+            logError("Invalid file type: $detectedType");
         }
+    }
 
-        // Сохраняем сообщение в файл
-        if (file_put_contents($filename, $fullMessage, FILE_APPEND) === false) {
-            logError("Failed to write message to file: $filename");
+    // Save message or file info
+    if ($message || $filePath) {
+        $content = $dateTime . ' - ';
+        if ($message) $content .= $message;
+        if ($filePath) $content .= ' [IMAGE:' . $filePath . ']';
+        $content .= PHP_EOL;
+
+        if (file_put_contents($filename, $content, FILE_APPEND) === false) {
+            logError("Failed to write to file: $filename");
         }
     } else {
-        logError("No message provided");
+        logError("No content provided");
     }
 }
 
