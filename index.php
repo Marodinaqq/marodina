@@ -6,7 +6,118 @@
     <link rel="stylesheet" href="./css/style.css">
     <link rel="icon" href="https://raw.githubusercontent.com/Marodinaqq/marodina/main/icon.png" type="image/x-icon">
     <title>Мародина</title>
-    <script>
+<script>
+// T9-подсказки
+function setupT9Suggestions() {
+    const messageField = document.getElementById('message');
+    const suggestionsContainer = document.createElement('div');
+    suggestionsContainer.id = 't9-suggestions';
+    suggestionsContainer.style.display = 'none';
+    messageField.parentNode.insertBefore(suggestionsContainer, messageField.nextSibling);
+
+    // Словарь T9 (русский язык)
+    const t9Dictionary = {
+        '2': ['а', 'б', 'в', 'г'],
+        '3': ['д', 'е', 'ж', 'з'],
+        '4': ['и', 'й', 'к', 'л'],
+        '5': ['м', 'н', 'о', 'п'],
+        '6': ['р', 'с', 'т', 'у'],
+        '7': ['ф', 'х', 'ц', 'ч'],
+        '8': ['ш', 'щ', 'ъ', 'ы'],
+        '9': ['ь', 'э', 'ю', 'я']
+    };
+
+    // Популярные слова для подсказок
+    const popularWords = [
+        'прiвет', 'окок', 'дела', 'хорошо', 'плохо', 
+        'спасiбо', 'пожалуйста', 'да', 'нiт', 'окей',
+        'нi', 'нехочу', 'сiсi', 'перемога', 'буде', 'кок', 'кокi',
+        'люблю', 'нравiтся', 'смешно', 'грустно', 'здорово'
+    ];
+
+    messageField.addEventListener('input', function() {
+        const lastWord = this.value.split(/\s+/).pop().toLowerCase();
+        suggestionsContainer.innerHTML = '';
+        suggestionsContainer.style.display = 'none';
+
+        if (lastWord.length > 0) {
+            // Проверяем, если ввод состоит из цифр (режим T9)
+            if (/^[2-9]+$/.test(lastWord)) {
+                const digits = lastWord.split('');
+                let suggestions = [''];
+
+                digits.forEach(digit => {
+                    const newSuggestions = [];
+                    const letters = t9Dictionary[digit] || [];
+                    suggestions.forEach(suggestion => {
+                        letters.forEach(letter => {
+                            newSuggestions.push(suggestion + letter);
+                        });
+                    });
+                    suggestions = newSuggestions;
+                });
+
+                if (suggestions.length > 0) {
+                    showSuggestions(suggestions.slice(0, 5));
+                }
+            } else {
+                // Обычные текстовые подсказки
+                const filtered = popularWords.filter(word => 
+                    word.startsWith(lastWord) && word !== lastWord
+                );
+                if (filtered.length > 0) {
+                    showSuggestions(filtered.slice(0, 5));
+                }
+            }
+        }
+    });
+
+    function showSuggestions(words) {
+        suggestionsContainer.innerHTML = '';
+        words.forEach(word => {
+            const btn = document.createElement('button');
+            btn.textContent = word;
+            btn.type = 'button';
+            btn.addEventListener('click', function() {
+                const currentValue = messageField.value.split(/\s+/);
+                currentValue.pop();
+                currentValue.push(word);
+                messageField.value = currentValue.join(' ') + ' ';
+                suggestionsContainer.style.display = 'none';
+                messageField.focus();
+            });
+            suggestionsContainer.appendChild(btn);
+        });
+        suggestionsContainer.style.display = 'flex';
+    }
+}
+
+// Автозамена "и" на "i"
+function setupAutoReplace() {
+    const messageField = document.getElementById('message');
+    
+    messageField.addEventListener('input', function() {
+        if (this.value.includes('и')) {
+            // Сохраняем позицию курсора
+            const start = this.selectionStart;
+            const end = this.selectionEnd;
+            
+            // Заменяем "и" на "i"
+            this.value = this.value.replace(/и/g, 'i');
+            
+            // Восстанавливаем позицию курсора
+            this.setSelectionRange(start, end);
+        }
+    });
+}
+
+// Добавьте эти функции в обработчик DOMContentLoaded
+document.addEventListener('DOMContentLoaded', function() {
+    // ... существующий код ...
+    
+    setupT9Suggestions();
+    setupAutoReplace();
+});
         function insertEmoji(emoji) {
             const messageField = document.getElementById('message');
             messageField.value += emoji;
@@ -52,7 +163,7 @@
                 message.innerHTML = linkify(message.innerHTML);
             });
         });
-    </script>
+</script>
 </head>
 <body>
     <input type="checkbox" id="searchbtn" aria-hidden="true">
